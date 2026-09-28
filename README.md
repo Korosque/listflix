@@ -28,6 +28,15 @@ O ListFlix organiza a experiência de escolher um filme: a pessoa entra com um l
 
 ## Instalação e execução
 
+No PowerShell do Windows, use `npm.cmd` para evitar o bloqueio do script `npm.ps1`:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
+No Prompt de Comando do Windows, macOS ou Linux, use:
+
 ```bash
 npm install
 npm run dev
