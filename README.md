@@ -1,6 +1,6 @@
 # ListFlix
 
-FrontEnd responsivo para descobrir filmes, consultar detalhes e montar uma lista pessoal de títulos para assistir.
+Aplicação responsiva para descobrir filmes, consultar detalhes e manter uma lista pessoal de títulos para assistir. A lista usa uma API própria em Fastify com CRUD em memória.
 
 ## Integrantes
 
@@ -8,52 +8,53 @@ FrontEnd responsivo para descobrir filmes, consultar detalhes e montar uma lista
 - Kaio Dias
 - Igor Mazorque
 
-## Objetivo
-
-O ListFlix organiza a experiência de escolher um filme: a pessoa entra com um login demonstrativo, explora o catálogo, pesquisa títulos, consulta detalhes e salva os filmes para assistir depois. A lista e a sessão ficam guardadas no navegador.
-
 ## Tecnologias
 
 - React, TypeScript e Vite
-- React Router para as rotas
-- API pública Studio Ghibli para filmes de animação
-- API pública SampleAPIs Movies para as demais categorias do catálogo
-- MetaHub como alternativa de pôster para filmes identificados pelo IMDb
-- `localStorage` para a sessão demonstrativa e a lista pessoal
+- React Router
+- Fastify com `@fastify/cors`
+- APIs públicas Studio Ghibli e SampleAPIs para descoberta do catálogo
+- `localStorage` apenas para a sessão demonstrativa
 
 ## Requisitos
 
-- Node.js 20.19 ou superior (ou 22.12 ou superior)
+- Node.js 20.19+ (ou 22.12+)
 - npm
 
 ## Instalação e execução
 
-No PowerShell do Windows, use `npm.cmd` para evitar o bloqueio do script `npm.ps1`:
+Na raiz do projeto:
 
 ```powershell
 npm.cmd install
 npm.cmd run dev
 ```
 
-No Prompt de Comando do Windows, macOS ou Linux, use:
+Em outro terminal, inicie a API:
 
-```bash
-npm install
-npm run dev
+```powershell
+npm.cmd run dev:api
 ```
 
-Abra no navegador o endereço mostrado pelo Vite (normalmente `http://localhost:5173`). Para gerar a versão de produção, use `npm run build`; para pré-visualizá-la, use `npm run preview`.
+A API fica em `http://localhost:3001`. Também pode ser configurada por `VITE_API_URL`. O CORS permite origens localhost e uma origem adicional definida em `FRONTEND_ORIGIN`. Verifique o servidor em `GET /health`. O recurso `/movies` oferece `GET /movies`, `GET /movies/:id`, `POST /movies`, `PUT /movies/:id` e `DELETE /movies/:id`. As rotas de filmes recebem o e-mail da sessão demonstrativa no cabeçalho `x-user-email`, para manter listas separadas por conta simulada. Isso não é autenticação real. Os dados ficam em memória e são apagados quando o servidor reinicia.
+
+Para compilar e executar o backend:
+
+```powershell
+npm.cmd run build:api
+npm.cmd run start:api
+```
 
 ## Acesso demonstrativo
 
-Use qualquer e-mail válido e uma senha de pelo menos quatro caracteres. Não existe autenticação real nem backend nesta etapa.
+Use qualquer e-mail válido e uma senha com pelo menos quatro caracteres. O login é demonstrativo e não autentica usuários.
 
-## Rotas
+## Rotas do frontend
 
 - `/login` — entrada demonstrativa
 - `/inicio` — destaques e recomendações
-- `/catalogo` — busca, filtros e catálogo carregado pela API
+- `/catalogo` — busca, filtros e catálogo público
 - `/filme/:id` — detalhes do título
-- `/minha-lista` — filmes salvos no navegador
+- `/minha-lista` — cadastrar, listar, editar e remover filmes pela API própria
 
-O catálogo depende de conexão com a internet. A tela informa quando está carregando e oferece uma nova tentativa se ocorrer erro.
+O catálogo público requer conexão com a internet. A lista pessoal requer que o servidor Fastify esteja ativo. Ambas as telas apresentam estados de carregamento e erro.
