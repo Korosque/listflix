@@ -2,9 +2,107 @@ import { useState, type FormEvent } from 'react'
 import { ArrowRight, Clapperboard, Film, Heart, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useMovies } from '../context/MovieContext'
+
 export function Login() {
-  const [email, setEmail] = useState(''), [password, setPassword] = useState(''), [error, setError] = useState('')
-  const { login } = useMovies(), navigate = useNavigate()
-  function submit(event: FormEvent) { event.preventDefault(); if (login(email, password)) navigate('/inicio'); else setError('Digite um e-mail válido e uma senha com pelo menos 4 caracteres.') }
-  return <div className="login-page"><div className="login-art"><div className="login-brand"><Clapperboard size={20}/> LISTFLIX</div><div className="art-content"><span className="eyebrow"><Sparkles size={14}/> SUA PRÓXIMA HISTÓRIA COMEÇA AQUI</span><h1>Um bom filme<br/>muda a <em>noite.</em></h1><p>Descubra histórias incríveis e guarde aquelas que você não quer esquecer.</p><div className="art-poster-row"><img src="https://image.tmdb.org/t/p/w342/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"/><img src="https://image.tmdb.org/t/p/w342/q719jXXEzOoYaps6babgKnONONX.jpg"/><img src="https://image.tmdb.org/t/p/w342/5KCVkau1HEl7ZzfPsKAPM0sMiKc.jpg"/><img src="https://image.tmdb.org/t/p/w342/1E5baAaEse26fej7uHcjOgEE2t2.jpg"/></div><div className="art-note"><span className="note-icon"><Heart size={15} fill="currentColor"/></span><span><b>Seu cinema, do seu jeito.</b><small>Uma lista feita para você.</small></span></div></div><span className="art-index">01 — 04 &nbsp; · &nbsp; UM UNIVERSO DE HISTÓRIAS</span></div><div className="login-form-side"><div className="form-wrap"><span className="form-kicker"><Film size={15}/> BEM-VINDO AO SEU CLUBE</span><h2>Entre e dê o<br/>play na sua noite.</h2><p className="form-intro">Crie seu espaço e organize os filmes que quer assistir.</p><form onSubmit={submit}><label htmlFor="email">Seu e-mail</label><input id="email" type="email" placeholder="voce@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required/><label htmlFor="password">Senha</label><input id="password" type="password" placeholder="No mínimo 4 caracteres" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={4}/>{error && <p className="form-error">{error}</p>}<button className="primary-button" type="submit">Entrar no ListFlix <ArrowRight size={17}/></button></form><p className="mock-hint">Acesso demonstrativo: use qualquer e-mail válido e senha com 4+ caracteres.</p><div className="form-bottom"><span>FEITO PARA QUEM AMA CINEMA</span><span>© LISTFLIX 2026</span></div></div></div></div>
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const { login } = useMovies()
+  const navigate = useNavigate()
+
+  function submit(event: FormEvent) {
+    event.preventDefault()
+    if (login(email, password)) {
+      navigate('/inicio')
+    } else {
+      setError('Digite um e-mail válido e uma senha com pelo menos 4 caracteres.')
+    }
+  }
+
+  return (
+    <div className="login-page">
+      <div className="login-art">
+        <div className="login-brand">
+          <Clapperboard size={20} /> LISTFLIX
+        </div>
+        <div className="art-content">
+          <span className="eyebrow">
+            <Sparkles size={14} /> SUA PRÓXIMA HISTÓRIA COMEÇA AQUI
+          </span>
+          <h1>
+            Um bom filme
+            <br />
+            muda a <em>noite.</em>
+          </h1>
+          <p>Descubra histórias incríveis e guarde aquelas que você não quer esquecer.</p>
+          <div className="art-poster-row">
+            <img src="https://image.tmdb.org/t/p/w342/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" />
+            <img src="https://image.tmdb.org/t/p/w342/q719jXXEzOoYaps6babgKnONONX.jpg" />
+            <img src="https://image.tmdb.org/t/p/w342/5KCVkau1HEl7ZzfPsKAPM0sMiKc.jpg" />
+            <img src="https://image.tmdb.org/t/p/w342/1E5baAaEse26fej7uHcjOgEE2t2.jpg" />
+          </div>
+          <div className="art-note">
+            <span className="note-icon">
+              <Heart size={15} fill="currentColor" />
+            </span>
+            <span>
+              <b>Seu cinema, do seu jeito.</b>
+              <small>Uma lista feita para você.</small>
+            </span>
+          </div>
+        </div>
+        <span className="art-index">01 — 04 &nbsp; · &nbsp; UM UNIVERSO DE HISTÓRIAS</span>
+      </div>
+
+      <div className="login-form-side">
+        <div className="form-wrap">
+          <span className="form-kicker">
+            <Film size={15} /> BEM-VINDO AO SEU CLUBE
+          </span>
+          <h2>
+            Entre e dê o
+            <br />
+            play na sua noite.
+          </h2>
+          <p className="form-intro">
+            Crie seu espaço e organize os filmes que quer assistir.
+          </p>
+          <form onSubmit={submit}>
+            <label htmlFor="email">Seu e-mail</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="voce@email.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+            <label htmlFor="password">Senha</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="No mínimo 4 caracteres"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              minLength={4}
+            />
+            {error && <p className="form-error">{error}</p>}
+            <button className="primary-button" type="submit">
+              Entrar no ListFlix <ArrowRight size={17} />
+            </button>
+          </form>
+          <p className="mock-hint">
+            Acesso demonstrativo: use qualquer e-mail válido e senha com 4+ caracteres.
+          </p>
+          <div className="form-bottom">
+            <span>FEITO PARA QUEM AMA CINEMA</span>
+            <span>© LISTFLIX 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }

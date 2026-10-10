@@ -20,7 +20,9 @@ async function request<T>(path: string, owner: string, init?: RequestInit): Prom
 export const watchlistApi = {
   list: (owner: string) => request<Movie[]>('/movies', owner),
   get: (id: number, owner: string) => request<Movie>(`/movies/${id}`, owner),
-  create: (movie: Omit<Movie, 'id'>, owner: string) => request<Movie>('/movies', owner, { method: 'POST', body: JSON.stringify(movie) }),
-  update: (movie: Movie, owner: string) => request<Movie>(`/movies/${movie.id}`, owner, { method: 'PUT', body: JSON.stringify(movie) }),
+  create: (movie: Omit<Movie, 'id'>, owner: string) =>
+    request<Movie>('/movies', owner, { method: 'POST', body: JSON.stringify(movie) }),
+  update: (movie: Movie, owner: string) =>
+    request<Movie>(`/movies/${movie.id}`, owner, { method: 'PUT', body: JSON.stringify(movie) }),
   remove: (id: number, owner: string) => request<void>(`/movies/${id}`, owner, { method: 'DELETE' }),
 }

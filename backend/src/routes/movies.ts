@@ -20,14 +20,23 @@ function validMovie(value: unknown): value is Omit<Movie, 'id'> {
     try {
       const url = new URL(movie.posterURL)
       validPosterUrl = url.protocol === 'https:' || url.protocol === 'http:'
-    } catch { /* URL inválida */ }
+    } catch {
+      /* URL inválida */
+    }
   }
-  return typeof movie.title === 'string' && movie.title.trim().length > 0
-    && validPosterUrl
-    && (movie.year === undefined || (typeof movie.year === 'number' && Number.isInteger(movie.year) && movie.year >= 1888 && movie.year <= 2100))
-    && (movie.overview === undefined || typeof movie.overview === 'string')
-    && (movie.genre === undefined || typeof movie.genre === 'string')
-    && (movie.imdbId === undefined || typeof movie.imdbId === 'string')
+  return (
+    typeof movie.title === 'string' &&
+    movie.title.trim().length > 0 &&
+    validPosterUrl &&
+    (movie.year === undefined ||
+      (typeof movie.year === 'number' &&
+        Number.isInteger(movie.year) &&
+        movie.year >= 1888 &&
+        movie.year <= 2100)) &&
+    (movie.overview === undefined || typeof movie.overview === 'string') &&
+    (movie.genre === undefined || typeof movie.genre === 'string') &&
+    (movie.imdbId === undefined || typeof movie.imdbId === 'string')
+  )
 }
 
 function findMovieIndex(movies: Movie[], id: string): number {
@@ -55,9 +64,15 @@ export async function movieRoutes(app: FastifyInstance) {
   app.post<{ Body: unknown; Headers: { 'x-user-email'?: string } }>('/', async (request, reply) => {
     const owner = getOwner(request, reply)
     if (!owner) return reply
-    if (!validMovie(request.body)) return reply.code(400).send({ message: 'Título e URL HTTP(S) do pôster são obrigatórios; confira os demais campos.' })
+    if (!validMovie(request.body)) {
+      return reply
+        .code(400)
+        .send({ message: 'Título e URL HTTP(S) do pôster são obrigatórios; confira os demais campos.' })
+    }
     const movie: Movie = {
-      title: request.body.title.trim(), posterURL: request.body.posterURL.trim(), id: createId(),
+      title: request.body.title.trim(),
+      posterURL: request.body.posterURL.trim(),
+      id: createId(),
       ...(request.body.imdbId !== undefined && { imdbId: request.body.imdbId }),
       ...(request.body.year !== undefined && { year: request.body.year }),
       ...(request.body.overview !== undefined && { overview: request.body.overview }),
@@ -73,9 +88,15 @@ export async function movieRoutes(app: FastifyInstance) {
     const movies = getMovies(owner)
     const index = findMovieIndex(movies, request.params.id)
     if (index < 0) return reply.code(404).send({ message: 'Filme não encontrado.' })
-    if (!validMovie(request.body)) return reply.code(400).send({ message: 'Título e URL HTTP(S) do pôster são obrigatórios; confira os demais campos.' })
+    if (!validMovie(request.body)) {
+      return reply
+        .code(400)
+        .send({ message: 'Título e URL HTTP(S) do pôster são obrigatórios; confira os demais campos.' })
+    }
     movies[index] = {
-      title: request.body.title.trim(), posterURL: request.body.posterURL.trim(), id: movies[index].id,
+      title: request.body.title.trim(),
+      posterURL: request.body.posterURL.trim(),
+      id: movies[index].id,
       ...(request.body.imdbId !== undefined && { imdbId: request.body.imdbId }),
       ...(request.body.year !== undefined && { year: request.body.year }),
       ...(request.body.overview !== undefined && { overview: request.body.overview }),

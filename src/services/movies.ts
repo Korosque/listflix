@@ -9,16 +9,28 @@ const sources = [
   { endpoint: 'family', label: 'Família' },
 ]
 
-interface GhibliFilm { title: string; image: string; description: string; release_date: string }
+interface GhibliFilm {
+  title: string
+  image: string
+  description: string
+  release_date: string
+}
 
 function stableId(title: string): number {
-  return Array.from(title.toLocaleLowerCase('pt-BR')).reduce((hash, character) => ((hash * 31) + character.codePointAt(0)!) >>> 0, 7)
+  return Array.from(title.toLocaleLowerCase('pt-BR')).reduce(
+    (hash, character) => ((hash * 31) + character.codePointAt(0)!) >>> 0,
+    7,
+  )
 }
 
 function hasUsablePoster(url: string): boolean {
   try {
     const parsed = new URL(url)
-    return parsed.protocol === 'https:' && !/(^|\.)example\.com$/i.test(parsed.hostname) && !/placeholder|no[-_]?image/i.test(url)
+    return (
+      parsed.protocol === 'https:' &&
+      !/(^|\.)example\.com$/i.test(parsed.hostname) &&
+      !/placeholder|no[-_]?image/i.test(url)
+    )
   } catch {
     return false
   }
@@ -39,15 +51,22 @@ export async function fetchMovies(): Promise<Movie[]> {
       return response.json() as Promise<GhibliFilm[]>
     }),
     ...sources.map(async ({ endpoint, label }) => {
-    const response = await fetch(`https://api.sampleapis.com/movies/${endpoint}`)
-    if (!response.ok) throw new Error('Não foi possível carregar o catálogo agora.')
-    const movies = await response.json() as Movie[]
+      const response = await fetch(`https://api.sampleapis.com/movies/${endpoint}`)
+      if (!response.ok) throw new Error('Não foi possível carregar o catálogo agora.')
+      const movies = await response.json() as Movie[]
       return movies
-        .filter((movie) => movie.title && (hasUsablePoster(movie.posterURL) || isValidImdbId(movie.imdbId)) && !/^(test|sample|am updated)\b/i.test(movie.title))
+        .filter(
+          (movie) =>
+            movie.title &&
+            (hasUsablePoster(movie.posterURL) || isValidImdbId(movie.imdbId)) &&
+            !/^(test|sample|am updated)\b/i.test(movie.title),
+        )
         .map((movie) => ({
           ...movie,
           id: stableId(movie.title),
-          posterURL: hasUsablePoster(movie.posterURL) ? movie.posterURL : imdbPoster(movie.imdbId!),
+          posterURL: hasUsablePoster(movie.posterURL)
+            ? movie.posterURL
+            : imdbPoster(movie.imdbId!),
           genre: label,
         }))
     }),
@@ -68,7 +87,9 @@ export async function fetchMovies(): Promise<Movie[]> {
   const allMovies = [...animation, ...results.flat()]
   allMovies.forEach((movie) => {
     const titleKey = movie.title.trim().toLocaleLowerCase('pt-BR')
-    if (titleKey && !unique.has(titleKey)) unique.set(titleKey, movie)
+    if (titleKey && !unique.has(titleKey)) {
+      unique.set(titleKey, movie)
+    }
   })
   return [...unique.values()]
 }
