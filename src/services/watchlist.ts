@@ -1,12 +1,11 @@
+import { API_BASE_URL } from '../config/api'
 import type { Movie } from '../types/movie'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 async function request<T>(path: string, owner: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers)
   headers.set('x-user-email', owner)
   if (init?.body !== undefined) headers.set('Content-Type', 'application/json')
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers,
   })
